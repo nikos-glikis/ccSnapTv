@@ -10,8 +10,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>MyUtils</groupId>
-            <artifactId>MyUtils</artifactId>
+            <groupId>com.object0r</groupId>
+            <artifactId>com.object0r</artifactId>
             <version>1.0.2</version>
         </dependency>
     </dependencies>
