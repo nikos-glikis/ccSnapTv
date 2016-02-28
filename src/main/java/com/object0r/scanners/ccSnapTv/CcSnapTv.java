@@ -1,9 +1,11 @@
-package com.scanners.ccsnaptv;
+package com.object0r.scanners.ccSnapTv;
 
-import com.toortools.Utilities;
-import com.toortools.http.HTTP;
-import com.toortools.http.HttpRequestInformation;
-import com.toortools.http.HttpResult;
+
+import com.object0r.scanners.ShodanScanner.ShodanWorkerManager;
+import com.object0r.toortools.Utilities;
+import com.object0r.toortools.http.HTTP;
+import com.object0r.toortools.http.HttpRequestInformation;
+import com.object0r.toortools.http.HttpResult;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -13,22 +15,30 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.Random;
-import java.util.Scanner;
+
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CcSnapTv
 {
-    public CcSnapTv()
+    ShodanWorkerManager shodanWorkerManager;
+    public CcSnapTv(String iniFile)
     {
-        process();
+
+        shodanWorkerManager = new ShodanWorkerManager(iniFile);
+
+        while (true)
+        {
+            process();
+        }
+
     }
     Vector<String> ips  = new Vector<String>();
 
     private void process()
     {
-        int threadCount = 250;
+        int threadCount = 25;
         try
         {
             try
@@ -52,13 +62,17 @@ public class CcSnapTv
                         scanIp(ip);
                     }
                 };
+
                 executorService.submit(t);
+
                 if (threadCount-- > 0)
                 {
                     Thread.sleep(200);
                 }
             }
+
             executorService.shutdown();
+
         }
         catch (Exception e)
         {
@@ -74,8 +88,7 @@ public class CcSnapTv
         try
         {
             total++;
-            //"login_chk_usr_pwd()"
-            //String page = Utilities.readUrl();
+            ip = ip.replace("http://","");
             HttpRequestInformation httpRequestInfromation = new HttpRequestInformation();
             httpRequestInfromation.setUrl("http://"+ip);
             httpRequestInfromation.setMethodGet();
@@ -190,12 +203,14 @@ public class CcSnapTv
     {
         try
         {
-            Scanner sc = new Scanner (new FileInputStream("ips.txt"));
+            ips = shodanWorkerManager.getAndCleanFresh();
+            System.out.println(ips.size());
+            /*Scanner sc = new Scanner (new FileInputStream("ips.txt"));
             while (sc.hasNext())
             {
                 String line = sc.nextLine();
                 ips.add(line.replace("http://",""));
-            }
+            }*/
         }
         catch (Exception e)
         {
