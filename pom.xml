@@ -8,5 +8,11 @@
     <artifactId>ccSnapTv</artifactId>
     <version>1.0.0</version>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>MyUtils</groupId>
+            <artifactId>MyUtils</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+    </dependencies>
 </project>
