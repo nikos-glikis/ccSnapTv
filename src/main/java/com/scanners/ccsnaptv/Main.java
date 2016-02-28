@@ -1,6 +1,6 @@
 package com.scanners.ccsnaptv;
 
-import com.toortools.tor.TorHelper;
+import com.object0r.toortools.tor.TorHelper;
 
 public class Main
 {

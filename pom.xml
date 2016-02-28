@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <groupId>com.object0r</groupId>
-            <artifactId>com.object0r</artifactId>
+            <artifactId>toortools</artifactId>
             <version>1.0.2</version>
         </dependency>
     </dependencies>
