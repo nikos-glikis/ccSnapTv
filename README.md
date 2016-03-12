@@ -40,30 +40,55 @@ Ubuntu 14.04:
     
     sudo service tor start
     
-3) Clone and install maven dependencies (Not yet on Maven Central)
+3) Clone and install maven dependencies (Not yet on Maven Central).
+
+Steps below work for Windows and Linux. If you are running this in Windows make sure maven is installed. Also if you want to use TOR functionality, make sure that
+the installation directory of tor is added in the PATH enviroment variable. This can be verified, when you run tor from Command Prompt you must NOT get the "tor is not recognised as an internal [...]"
+
 
     #ToorTools
-    git clone git@github.com:nikos-glikis/toortools.git
+    git clone https://github.com/nikos-glikis/toortools.git
     cd toortools
-    ./build.sh
-    ./install.sh
+    #./build.sh
+    mvn install:install-file -DgroupId=ftp4j -DartifactId=ftp4j -Dversion=1.7.2 -Dpackaging=jar -Dfile=lib/ftp4j/ftp4j/1.7.2/ftp4j-1.7.2.jar
+    mvn clean compile assembly:single
+    #./install.sh
+    mvn install:install-file  -DgroupId=com.object0r -DartifactId=toortools -Dversion=1.0.2 -Dpackaging=jar -Dfile=target/toortools-1.0.2-jar-with-dependencies.jar
+    cd ../
      
     #TorRange
-    git clone git@github.com:nikos-glikis/TorRange.git
+    git clone https://github.com/nikos-glikis/TorRange.git
     cd TorRange
-    ./build_jar.sh
-    ./install_jar.sh
+    #./build_jar.sh
+    mvn clean compile assembly:single
+    #./install_jar.sh
+    mvn install:install-file  -DgroupId=com.object0r -DartifactId=TorRange -Dversion=1.0.3 -Dpackaging=jar -Dfile=target/TorRange-1.0.3-jar-with-dependencies.jar
+    cd ../
    
     #ShodanScanner
-    git clone git@github.com:nikos-glikis/ShodanScanner.git
+    git clone https://github.com/nikos-glikis/ShodanScanner.git
     cd ShodanScanner
-    ./build_jar.sh
-    ./install_jar.sh
+    #./build_jar.sh
+    mvn clean compile assembly:single
+    #./install_jar.sh
+    mvn install:install-file  -DgroupId=com.object0r.scanners -DartifactId=ShodanScanner -Dversion=1.0.1 -Dpackaging=jar -Dfile=target/ShodanScanner-1.0.1-jar-with-dependencies.jar
+    cd ../
+    
+4) Install and run ccSnapTv
 
-4) Install ccSnapTv
+.
 
-    git clone git@github.com:nikos-glikis/ccSnapTv.git
+If the account is a paid account the results are aggregated much faster.
+
+    git clone https://github.com/nikos-glikis/ccSnapTv.git
     cd ccSnapTv
-    ./build.sh
-    ./start.sh
+    #./build.sh
+    mvn clean compile assembly:single
+    
+Take a look ad ccSnapTv.ini and adjust the params. Increasing threads makes the process faster, but more bandwidth is required.
+Also you can use tor and make everything stealth with useTor=true. If you do that make sure that tor is accessible.
+    
+    Also a shodan account is required for the software to run properly. Registration is free and the credentials of one account are already there
+    #./start.sh
+    java -jar target/ccSnapTv-1.0.0-jar-with-dependencies.jar ccSnapTv.ini
     
