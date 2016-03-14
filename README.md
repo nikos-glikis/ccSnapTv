@@ -14,7 +14,6 @@ This was created (and published) for 2 reasons:
 - As a proof of concept of my stance on "smart" devices: You should never install anything "smart" in you home - It can be, and will, hacked at some point.
 - To show in action some programming principles I believe in and I want to demonstrate.
 
-The actual software
 
 This software uses 3 of my libraries - Uploaded in different repositories and only shared with the public .
 
@@ -24,7 +23,7 @@ This software uses 3 of my libraries - Uploaded in different repositories and on
 
 [ShodanScanner](#) - A library makes multiple requests to the shodan Website and returns the found ips for a specific query.
 
-The actual code in this repo is ~200 lines. The rest are libraries that I have developed.
+The actual code in this repo is ~200 lines. The rest are libraries that I have developed in the past.
 
 Install:
 ========
@@ -85,10 +84,11 @@ If the account is a paid account the results are aggregated much faster.
     #./build.sh
     mvn clean compile assembly:single
     
-Take a look ad ccSnapTv.ini and adjust the params. Increasing threads makes the process faster, but more bandwidth is required.
-Also you can use tor and make everything stealth with useTor=true. If you do that make sure that tor is accessible.
+Take a look at ccSnapTv.ini and adjust the params. Increasing threads makes the process faster, but more bandwidth is required.
+Also you can use tor and make everything stealth with useTor=true. If you do that make sure that tor is accessible. Login over TOR might not work.
     
     Also a shodan account is required for the software to run properly. Registration is free and the credentials of one account are already there
     #./start.sh
     java -jar target/ccSnapTv-1.0.0-jar-with-dependencies.jar ccSnapTv.ini
     
+If everything works, you should see a list of IPs in your screen. The images will be downloaded in the output/ directory.
