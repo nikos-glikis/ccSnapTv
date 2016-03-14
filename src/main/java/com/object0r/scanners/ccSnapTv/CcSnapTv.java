@@ -1,5 +1,8 @@
 package com.object0r.scanners.ccSnapTv;
 
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.model.CountryResponse;
+import com.maxmind.geoip2.record.Country;
 import com.object0r.scanners.ShodanScanner.ShodanWorkerManager;
 import com.object0r.toortools.Utilities;
 import com.object0r.toortools.http.HTTP;
@@ -10,6 +13,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
@@ -22,10 +27,17 @@ public class CcSnapTv
     static final String outputDir = "output";
     static int total;
     static int found;
-
+    File ipDatabaseFile;
+    DatabaseReader ipReader;
     public CcSnapTv(String iniFile)
     {
         shodanWorkerManager = new ShodanWorkerManager(iniFile);
+        ipDatabaseFile = new File("resources/GeoLite2-Country.mmdb");
+        try {
+            ipReader = new DatabaseReader.Builder(ipDatabaseFile).build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         while (true)
         {
 
@@ -84,12 +96,40 @@ public class CcSnapTv
         }
     }
 
+
+
+    public String getIpCountry(String ip)
+    {
+        String country = "unknown";
+        try
+        {
+            InetAddress ipAddress = InetAddress.getByName(ip);
+            CountryResponse response = ipReader.country(ipAddress);
+            Country countryCountry = response.getCountry();
+            country = countryCountry.getName();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return country;
+    }
+
     public void scanIp(String ip)
     {
         try
         {
             total++;
             ip = ip.replace("http://", "");
+
+            String cleanIp = ip;
+            if (cleanIp.contains(":"))
+            {
+                cleanIp = cleanIp.substring(0, cleanIp.indexOf(":"));
+            }
+
+            String country = getIpCountry(cleanIp);
+
             HttpRequestInformation httpRequestInfromation = new HttpRequestInformation();
             httpRequestInfromation.setUrl("http://" + ip);
             httpRequestInfromation.setMethodGet();
@@ -114,8 +154,15 @@ public class CcSnapTv
                         //
                         break;
                     }
+                    String thisOutputDir = outputDir+"/"+country;
+                    if (!new File(thisOutputDir).exists())
+                    {
+                        new File(thisOutputDir).mkdirs();
+                    }
                     //String filename = outputDir +"/" +(found)+"_"+(ip.replace(":","_"))+"_"+i+".jpg";
-                    String filename = outputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+                    //String filename = outputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+                    String filename = thisOutputDir+ "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+
                     FileUtils.writeByteArrayToFile(new File(filename), httpResult.getContent());
                     if (!validImage(filename))
                     {

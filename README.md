@@ -84,7 +84,7 @@ If the account is a paid account the results are aggregated much faster.
     #./build.sh
     mvn clean compile assembly:single
     
-Take a look at ccSnapTv.ini and adjust the params. Increasing threads makes the process faster, but more bandwidth is required.
+Take a look at ccSnapTv.ini and adjust the params. Defaults work. Increasing threads makes the process faster, but more bandwidth is required.
 Also you can use tor and make everything stealth with useTor=true. If you do that make sure that tor is accessible. Login over TOR might not work.
     
     Also a shodan account is required for the software to run properly. Registration is free and the credentials of one account are already there
