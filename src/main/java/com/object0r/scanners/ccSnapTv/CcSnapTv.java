@@ -249,7 +249,7 @@ public class CcSnapTv
         try
         {
             ips = shodanWorkerManager.getAndCleanFresh();
-            System.out.println(ips.size());
+            System.out.println("Got "+ips.size() + " new ips");
         }
         catch (Exception e)
         {
