@@ -2,7 +2,7 @@
 #rm -rf /tmp/tor
 while :
 do
-    for i in {0..10}
+    for i in {0..30}
     do
         mkdir -p /tmp/tor/$socksport
         controlport=$((i + 10300))

