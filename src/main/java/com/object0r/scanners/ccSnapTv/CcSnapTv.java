@@ -4,11 +4,14 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
 import com.maxmind.geoip2.record.Country;
 import com.object0r.scanners.ShodanScanner.ShodanWorkerManager;
+import com.object0r.toortools.ConsoleColors;
 import com.object0r.toortools.Utilities;
 import com.object0r.toortools.http.HTTP;
 import com.object0r.toortools.http.HttpRequestInformation;
 import com.object0r.toortools.http.HttpResult;
 import org.apache.commons.io.FileUtils;
+import org.ini4j.Ini;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,20 +30,48 @@ public class CcSnapTv
     static final String outputDir = "output";
     static int total;
     static int found;
+    static int threadCount = 50;
     File ipDatabaseFile;
     DatabaseReader ipReader;
+    static int downloadedImagesCount = 0;
+
     public CcSnapTv(String iniFile)
     {
         shodanWorkerManager = new ShodanWorkerManager(iniFile);
         ipDatabaseFile = new File("resources/GeoLite2-Country.mmdb");
-        try {
+
+        try
+        {
             ipReader = new DatabaseReader.Builder(ipDatabaseFile).build();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
-        while (true)
+        try
+        {
+            Ini e = new Ini(new File(iniFile));
+            String threads = e.get("ccSnapTv", "threads");
+            threadCount = Integer.parseInt(threads);
+
+        }
+        catch (Exception e)
         {
 
+        }
+        try
+        {
+            new File(outputDir + "/_everything/").mkdirs();
+        }
+        catch (Exception e)
+        {
+                /* no-op */
+        }
+        updateDownloadedImagesCount();
+        System.out.println("ccSnapTv download threads: " + threadCount);
+
+        while (true)
+        {
             try
             {
                 process();
@@ -54,22 +85,15 @@ public class CcSnapTv
     }
 
     Vector<String> ips = new Vector<String>();
+
     private void process()
     {
         int threadCount = 25;
         try
         {
-            try
-            {
-                new File(outputDir + "/").mkdirs();
-            }
-            catch (Exception e)
-            {
-                /* no-op */
-            }
             readIps();
             Collections.shuffle(ips);
-            ExecutorService executorService = Executors.newFixedThreadPool(15);
+            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 
             for (final String ip : ips)
             {
@@ -152,14 +176,14 @@ public class CcSnapTv
                         //
                         break;
                     }
-                    String thisOutputDir = outputDir+"/"+country;
+                    String thisOutputDir = outputDir + "/" + country;
                     if (!new File(thisOutputDir).exists())
                     {
                         new File(thisOutputDir).mkdirs();
                     }
                     //String filename = outputDir +"/" +(found)+"_"+(ip.replace(":","_"))+"_"+i+".jpg";
                     //String filename = outputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
-                    String filename = thisOutputDir+ "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+                    String filename = thisOutputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
                     FileUtils.writeByteArrayToFile(new File(filename), httpResult.getContent());
                     if (!validImage(filename))
                     {
@@ -168,8 +192,8 @@ public class CcSnapTv
                         //Or delete it.
                         new File(filename).delete();
                     }
-                    thisOutputDir = outputDir+"/_everything";
-                    filename = thisOutputDir+ "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
+                    thisOutputDir = outputDir + "/_everything";
+                    filename = thisOutputDir + "/" + "_" + (ip.replace(":", "_")) + "_" + i + ".jpg";
 
                     FileUtils.writeByteArrayToFile(new File(filename), httpResult.getContent());
                     if (!validImage(filename))
@@ -253,12 +277,46 @@ public class CcSnapTv
     {
         try
         {
+            Thread.sleep(5000);
+
             ips = shodanWorkerManager.getAndCleanFresh();
-            System.out.println("Got "+ips.size() + " new ips");
+
+            ConsoleColors.printBlue("Got " + ips.size() + " new ips");
+            ConsoleColors.printBlue("From " + total + " ips scanned, " + found + " are vulnerable.");
+            ConsoleColors.printBlue("Downloaded "+downloadedImagesCount+ " screenshots.");
         }
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public void updateDownloadedImagesCount()
+    {
+        try
+        {
+            new Thread()
+            {
+                public void run()
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            downloadedImagesCount = new File(outputDir + "/_everything/").list().length;
+                            Thread.sleep(15000);
+                        }
+                        catch (InterruptedException e)
+                        {
+                            //e.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
+        }
+        catch (Exception e)
+        {
+
         }
     }
 }
