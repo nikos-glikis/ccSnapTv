@@ -56,4 +56,18 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <id>Object0r</id>
+            <name>Object0r</name>
+            <url>http://maven2.object0r.com/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 </project>

@@ -3,6 +3,7 @@ package com.object0r.scanners.ccSnapTv;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
 import com.maxmind.geoip2.record.Country;
+import com.object0r.scanners.ShodanScanner.ShodanWorker;
 import com.object0r.scanners.ShodanScanner.ShodanWorkerManager;
 import com.object0r.toortools.ConsoleColors;
 import com.object0r.toortools.Utilities;
@@ -37,7 +38,7 @@ public class CcSnapTv
 
     public CcSnapTv(String iniFile)
     {
-        shodanWorkerManager = new ShodanWorkerManager(iniFile);
+        shodanWorkerManager = new ShodanWorkerManager(iniFile, ShodanWorker.class);
         ipDatabaseFile = new File("resources/GeoLite2-Country.mmdb");
 
         try
