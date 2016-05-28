@@ -38,8 +38,7 @@ public class CcSnapTv
 
     public CcSnapTv(String iniFile)
     {
-        shodanWorkerManager = new ShodanWorkerManager(iniFile, ShodanWorker.class);
-        shodanWorkerManager.startWorkers();
+        shodanWorkerManager = new ShodanWorkerManager(iniFile);
         ipDatabaseFile = new File("resources/GeoLite2-Country.mmdb");
 
         try
