@@ -48,9 +48,13 @@ Ubuntu 14.04:
 3) Install and run ccSnapTv
 
     git clone https://github.com/nikos-glikis/ccSnapTv.git
+    
     cd ccSnapTv
+    
     #./build.sh
+    
     mvn clean compile assembly:single
+    
     
 Take a look at ccSnapTv.ini and adjust the params. Defaults work. Increasing threads makes the process faster, but more bandwidth is required.
 Also you can use tor and make everything stealth with useTor=true. If you do that make sure that tor is accessible. Login over TOR might not work.
